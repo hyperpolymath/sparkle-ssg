@@ -6,28 +6,23 @@
  * https://www.getzola.org/
  */
 
+import {
+  safeRunCommand,
+  isValidPath,
+  isValidUrl,
+  isValidPort,
+  isValidInterface,
+} from "./validation.js";
+
 export const name = "Zola";
 export const language = "Rust";
 export const description = "Fast static site generator written in Rust with built-in Sass compilation and syntax highlighting";
 
 let connected = false;
-let binaryPath = "zola";
+const binaryName = "zola";
 
 async function runCommand(args, cwd = null) {
-  const cmd = new Deno.Command(binaryPath, {
-    args,
-    cwd: cwd || Deno.cwd(),
-    stdout: "piped",
-    stderr: "piped",
-  });
-  const output = await cmd.output();
-  const decoder = new TextDecoder();
-  return {
-    success: output.success,
-    stdout: decoder.decode(output.stdout),
-    stderr: decoder.decode(output.stderr),
-    code: output.code,
-  };
+  return await safeRunCommand(binaryName, args, cwd);
 }
 
 export async function connect() {
@@ -62,6 +57,9 @@ export const tools = [
       required: ["path"],
     },
     execute: async ({ path, force }) => {
+      if (!isValidPath(path)) {
+        return { success: false, stdout: "", stderr: "Invalid path", code: 1 };
+      }
       const args = ["init", path];
       if (force) args.push("--force");
       return await runCommand(args);
@@ -80,6 +78,15 @@ export const tools = [
       },
     },
     execute: async ({ path, baseUrl, outputDir, drafts }) => {
+      if (path && !isValidPath(path)) {
+        return { success: false, stdout: "", stderr: "Invalid path", code: 1 };
+      }
+      if (baseUrl && !isValidUrl(baseUrl)) {
+        return { success: false, stdout: "", stderr: "Invalid base URL", code: 1 };
+      }
+      if (outputDir && !isValidPath(outputDir)) {
+        return { success: false, stdout: "", stderr: "Invalid output directory", code: 1 };
+      }
       const args = ["build"];
       if (baseUrl) args.push("--base-url", baseUrl);
       if (outputDir) args.push("--output-dir", outputDir);
@@ -101,6 +108,15 @@ export const tools = [
       },
     },
     execute: async ({ path, port, interface: iface, drafts, openBrowser }) => {
+      if (path && !isValidPath(path)) {
+        return { success: false, stdout: "", stderr: "Invalid path", code: 1 };
+      }
+      if (port && !isValidPort(port)) {
+        return { success: false, stdout: "", stderr: "Invalid port number", code: 1 };
+      }
+      if (iface && !isValidInterface(iface)) {
+        return { success: false, stdout: "", stderr: "Invalid interface", code: 1 };
+      }
       const args = ["serve"];
       if (port) args.push("--port", String(port));
       if (iface) args.push("--interface", iface);
@@ -120,6 +136,9 @@ export const tools = [
       },
     },
     execute: async ({ path, drafts }) => {
+      if (path && !isValidPath(path)) {
+        return { success: false, stdout: "", stderr: "Invalid path", code: 1 };
+      }
       const args = ["check"];
       if (drafts) args.push("--drafts");
       return await runCommand(args, path);
