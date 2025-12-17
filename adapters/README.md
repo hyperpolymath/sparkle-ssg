@@ -6,6 +6,15 @@ These adapters are synchronized from the [poly-ssg-mcp](https://github.com/hyper
 
 Each adapter wraps a specific static site generator CLI and exposes it via the MCP protocol.
 
+## Security
+
+All adapters use the shared `validation.js` module to prevent:
+- **Command injection**: Input validation prevents shell metacharacters
+- **Path traversal**: Path validation prevents `../` escape attacks
+- **Invalid arguments**: All inputs are validated before execution
+
+See `validation.js` for the full implementation.
+
 ## Available Adapters
 
 | Adapter | Language | SSG |
