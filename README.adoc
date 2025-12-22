@@ -1,202 +1,57 @@
-// SPDX-License-Identifier: AGPL-3.0-or-later
-// SPDX-FileCopyrightText: 2025 Jonathan D.A. Jewell
-= Sparkle-SSG
-:toc: left
-:toclevels: 2
+= sparkle-ssg
+:toc:
+:toc-title: Table of Contents
 :icons: font
-:source-highlighter: rouge
 
-image:https://img.shields.io/badge/adapters-28-blue[Adapters]
-image:https://img.shields.io/badge/components-44%2F44-success[Components]
-image:https://img.shields.io/badge/RSR-Gold-gold[RSR Compliance]
-image:https://img.shields.io/badge/license-MIT%20OR%20AGPL--3.0-blue[License]
+**Type-safe, concurrent static site generation in Gleam.**
+"Sparkle" — The brilliant clarity of a type-safe BEAM. A generator that brings functional elegance and fault tolerance to your content pipeline.
 
-*Unified MCP adapters for 28 static site generators across 12+ programming languages.*
+== Who Is This For?
+* **Erlang/Elixir developers** who want the static typing of ML on the BEAM.
+* **Systems Architects** requiring high-concurrency builds with zero runtime exceptions.
+* **Teams** seeking a modern, user-friendly functional engine that compiles to Erlang, JavaScript, or WASM.
+* **Accessibility Advocates** requiring a concurrent engine that treats BSL/ASL metadata as first-class types.
 
-Sparkle-SSG is a satellite implementation in the hyperpolymath ecosystem, providing security-hardened adapters for integrating static site generators with AI assistants via the Model Context Protocol (MCP).
+== Why sparkle-ssg?
+
+=== Type-Safe Concurrency
+Gleam’s type system ensures that data flowing through your concurrent build processes is always valid. `sparkle-ssg` catches template logic errors at compile time, ensuring that the "actor" processes never crash due to unexpected data shapes.
+
+=== Fault-Tolerant Pipelines
+Built on the Erlang VM (BEAM), `sparkle-ssg` handles massive sites by distributing rendering tasks across light-weight processes. If a single page render fails, the supervisor restarts the task without interrupting the rest of the build.
+
+=== Immutable Content Flows
+Content transformations are pure functional pipelines. By leveraging Gleam's immutable data structures, `sparkle-ssg` guarantees that your site state is never corrupted by side effects during the synthesis process.
+
+=== Multi-Target Emission
+`sparkle-ssg` can compile to Erlang for high-performance server-side builds or to JavaScript/WASM for client-side or **Edge tech** execution, offering unparalleled deployment flexibility.
 
 == Quick Start
-
-[source,bash]
+[source,oil]
 ----
-# Clone repository
-git clone https://github.com/hyperpolymath/sparkle-ssg
-cd sparkle-ssg
+# Install Gleam and Erlang via asdf
+just setup
 
-# Initialize development environment
-just init
+# Build the site with BEAM-level concurrency
+just build
 
-# Run checks
-just check
-
-# Run tests
-just test
+# Generate a WASM target for Edge deployment
+just build-wasm
 ----
 
 == Features
+* **Parallel Synthesis** - Native BEAM process management for multi-core scaling.
+* **Strict Type Inference** - No more runtime errors in your template logic.
+* **Podman-First** - Standard containerised toolchain for BEAM-based logic.
+* **Accessibility** - Integrated support for **BSL**, **GSL**, **ASL**, and **Makaton**.
 
-* **28 SSG Adapters** - Rust, Haskell, Elixir, Julia, Clojure, and more
-* **Security Hardened** - Input validation, path traversal prevention, command injection protection
-* **MCP Compatible** - Integrates with AI assistants via Model Context Protocol
-* **RSR Gold Compliant** - SPDX headers, SHA-pinned actions, signed commits
-* **Full Test Suite** - Unit, integration, and security tests
-* **Container Ready** - Containerfile for Docker/Podman deployment
+== Requirements
+* **Gleam (1.4.0 or later)**
+* **Erlang/OTP 26+**
+* **Just** (Orchestrator)
 
-== Supported SSGs
-
-[cols="2,3"]
-|===
-|Language |Static Site Generators
-
-|Rust
-|Zola, Cobalt, mdBook
-
-|Haskell
-|Hakyll, Ema
-
-|Elixir
-|Serum, NimblePublisher, Tableau
-
-|Julia
-|Franklin, Documenter.jl, StaticWebPages.jl
-
-|Clojure
-|Cryogen, Babashka, Perun
-
-|Racket
-|Frog, Pollen
-
-|Scala
-|Laika, ScalaTex
-
-|Other
-|Fornax (F#), Orchid (Kotlin), Nimrod (Nim), YOCaml (OCaml), Marmot (Crystal), Reggae (D), Publish (Swift), Wub (Tcl), Zotonic (Erlang), Coleslaw (Common Lisp)
-|===
-
-== Usage
-
-=== As a Module
-
-[source,javascript]
-----
-import { getAdapter, listAdapters, metadata } from '@hyperpolymath/sparkle-ssg';
-
-// List available adapters
-console.log(listAdapters());
-// ['zola', 'hakyll', 'cobalt', ...]
-
-// Load and use an adapter
-const zola = await getAdapter('zola');
-console.log(zola.name);     // "Zola"
-console.log(zola.language); // "Rust"
-
-// Execute a tool
-const result = await zola.tools[0].execute({ path: './my-site' });
-----
-
-=== Via Just Commands
-
-[source,bash]
-----
-just adapters          # List all adapters
-just validate-adapter zola  # Validate specific adapter
-just test              # Run tests
-just build             # Build all
-----
-
-== Project Structure
-
-[source]
-----
-sparkle-ssg/
-├── adapters/           # 28 SSG adapter implementations
-│   ├── mod.js         # Module entry point
-│   ├── validation.js  # Security validation utilities
-│   ├── zola.js        # Zola adapter (reference)
-│   └── ...            # Other adapters
-├── tests/             # Test suite
-├── .github/           # CI/CD workflows
-├── *.scm              # SCM metadata files (6 total)
-├── Justfile           # Task automation
-├── Mustfile           # Nickel formulae
-├── Containerfile      # Container definition
-├── cookbook.adoc      # Command reference
-└── README.adoc        # This file
-----
-
-== SCM Files
-
-This project uses 6 Scheme-based configuration files for project governance:
-
-[cols="1,3"]
-|===
-|File |Purpose
-
-|META.scm
-|Architecture decisions and development practices
-
-|STATE.scm
-|Project state, completion tracking, session history
-
-|ECOSYSTEM.scm
-|Ecosystem relationships and positioning
-
-|PLAYBOOK.scm
-|Operational procedures and runbooks
-
-|AGENTIC.scm
-|AI agent integration and MCP specifications
-
-|NEUROSYM.scm
-|Semantic specifications and reasoning rules
-|===
-
-== Security
-
-Sparkle-SSG implements comprehensive security measures:
-
-* **Input Validation** - All inputs validated before execution
-* **Path Traversal Prevention** - Blocks `../` escape attempts
-* **Command Injection Prevention** - Rejects shell metacharacters
-* **CodeQL Scanning** - Automated security analysis
-* **Dependabot** - Dependency vulnerability monitoring
-
-See link:SECURITY.md[SECURITY.md] for vulnerability reporting.
-
-== Development
-
-=== Requirements
-
-* Deno >= 1.40.0
-* Just >= 1.0.0
-* Git with signed commits
-
-=== Commands
-
-[source,bash]
-----
-just              # Show all commands
-just check        # Lint, format, security check
-just test         # Run test suite
-just test-all     # Full test suite with coverage
-just pre-commit   # Pre-commit checks
-----
-
-See link:cookbook.adoc[cookbook.adoc] for comprehensive command reference.
-
-== Contributing
-
-See link:CONTRIBUTING.md[CONTRIBUTING.md] for guidelines.
+== Part of poly-ssg
+`sparkle-ssg` is the type-safe concurrent member of the **poly-ssg** family.
 
 == License
-
-Dual-licensed under MIT OR AGPL-3.0-or-later. See link:LICENSE.txt[LICENSE.txt].
-
-== Related Projects
-
-* https://github.com/hyperpolymath/poly-ssg-mcp[poly-ssg-mcp] - Hub implementation
-* https://github.com/hyperpolymath/rhodium-standard-repositories[rhodium-standard-repositories] - RSR compliance guidelines
-
----
-
-_Part of the hyperpolymath ecosystem · v0.2.0 · 44/44 components complete_
+AGPL-3.0-or-later
