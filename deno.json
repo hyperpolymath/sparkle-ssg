@@ -2,18 +2,16 @@
   "$schema": "https://deno.land/x/deno/cli/schemas/config-file.v1.json",
   "name": "@hyperpolymath/sparkle-ssg",
   "version": "0.2.0",
-  "exports": {
-    ".": "./adapters/mod.js",
-    "./validation": "./adapters/validation.js"
-  },
+  "exports": "./src/Main.res.js",
   "tasks": {
-    "check": "deno check adapters/*.js",
-    "lint": "deno lint adapters/",
-    "fmt": "deno fmt adapters/",
+    "build": "deno run -A npm:rescript build",
+    "watch": "deno run -A npm:rescript build -w",
+    "start": "deno run --allow-all src/Main.res.js",
+    "dev": "deno run --watch --allow-all src/Main.res.js",
     "test": "deno test tests/ --allow-read --allow-run",
-    "test:coverage": "deno test --coverage=coverage/ tests/ --allow-all",
-    "coverage": "deno coverage coverage/ --lcov > coverage/lcov.info"
+    "ci": "deno task build && deno task test"
   },
+  "nodeModulesDir": "none",
   "lint": {
     "include": ["adapters/"],
     "rules": {
